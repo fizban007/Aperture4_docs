@@ -11,37 +11,35 @@ add new modules or to setup new physical scenarios.
 
 A simulation code does not (usually) need to create and destroy "entities" in
 real time, like a game would. Therefore, in `Aperture`, there are only two main
-categories of classes: ``system`` and ``data``. ``data`` is what holds the
-simulation data, e.g. fields and particles, while ``system`` refers to any
+categories of classes: `system` and `data`. `data` is what holds the
+simulation data, e.g. fields and particles, while `system` refers to any
 module that works on the data, e.g. pushing particles or evolving fields.
 
-The benefit of such a configuration is that both ``system`` and ``data`` are
+The benefit of such a configuration is that both `system` and `data` are
 flexible and can be plugged in and out depending on the problem. It is also very
 straightforward to handle data IO, since we can simply serialize a list of named
-``data`` objects.
+`data` objects.
 
-For lack of a better name, the :ref:`sim_environment` class is a coordinator
+For lack of a better name, the `sim_environment` class is a coordinator
 that ties things together. It keeps a registry of systems and data components,
 and calls every system in order in a giant loop for the duration of the
 simulation.
 
-# Systems
+## Systems
 
-Every system derives from the common base class :ref:`system_t`. There are three
-virtual functions a system can override: ``register_data_components()``,
-``init()``, and ``update()``.
+Every system derives from the common base class `system_t`. There are three
+virtual functions a system can override: `register_data_components()`,
+`init()`, and `update()`.
 
-register_data_components()
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+### register_data_components()
 
 A system needs to work on some data components. Depending on what systems are
 initialized, some data components may or may not be used. Therefore, systems are
 responsible for managing their own data dependency. For example, a
-``field_solver`` system needs to work on :math:`\mathbf{E}` and
-:math:`\mathbf{B}` fields, so it needs to register this dependency by overriding the ``register_data_components()`` function:
+`field_solver` system needs to work on $\mathbf{E}$ and
+$\mathbf{B}$ fields, so it needs to register this dependency by overriding the `register_data_components()` function:
 
-.. code-block:: cpp
-
+```cpp
    void register_data_components() {
        // E is a raw pointer to vector_field<Conf>
        E = m_env.register_data<vector_field<Conf>>(
@@ -49,22 +47,20 @@ responsible for managing their own data dependency. For example, a
        B = m_env.register_data<vector_field<Conf>>(
              "B", m_grid, field_type::edge_centered);
    }
+```
 
-``E`` and ``B`` are pointers to ``vector_field<Conf>`` and are constructed here.
-``register_data_components()`` takes an ``std::string`` for a name, followed by
+`E` and `B` are pointers to `vector_field<Conf>` and are constructed here.
+`register_data_components()` takes an `std::string` for a name, followed by
 parameters that are passed to the constructor of the data component. If these
 data components are registered already by another system under the same name,
 then the register_data() function will only return the pointer. No two
-components with the same name can co-exist. ``register_data_components()`` is
-called right after the constructor of the system, in ``register_system()``.
+components with the same name can co-exist. `register_data_components()` is
+called right after the constructor of the system, in `register_system()`.
 
-init()
-^^^^^^
+### init()
 
-update()
-^^^^^^^^
+### update()
 
-# Data Components
+## Data Components
 
 Every data component derives from the common base class `data_t`.
-
