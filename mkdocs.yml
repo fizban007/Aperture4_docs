@@ -1,0 +1,22 @@
+site_name: Aperture
+nav:
+  - Home: index.md
+  - Intro: 0-intro.md
+  - Development:
+    - Quick Setup: 1-setup.md
+    - Framework: 2-framework.md
+    - Units: 3-units.md
+  - Tutorials:
+    - Two stream instability: 4-two-stream.md
+  - About: about.md
+theme: readthedocs
+
+markdown_extensions:
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
