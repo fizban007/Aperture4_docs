@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Units - Aperture</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Units";
+        var mkdocs_page_input_path = "3-units.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> Aperture
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../0-intro/">Intro</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Development</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../1-setup/">Quick Setup</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../2-framework/">Framework</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Units</a>
+    <ul class="current">
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Tutorials</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../4-two-stream/">Two stream instability</a>
+                  </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../about/">About</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">Aperture</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Development</li>
+      <li class="breadcrumb-item active">Units</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="units">Units</h1>
+<p><code>Aperture</code> uses a unit system based on the <a href="https://en.wikipedia.org/wiki/Heaviside%E2%80%93Lorentz_units">Heaviside-Lorentz
+units</a>. In the HL
+units, Maxwell equations look like:</p>
+<div class="arithmatex">\[
+\begin{align}
+   \nabla\cdot\mathbf{E} &amp;= \rho \\
+   \nabla\cdot\mathbf{B} &amp;= 0 \\
+   \frac{\partial \mathbf{E}}{\partial t} &amp;= c\nabla\times\mathbf{B} - \mathbf{J} \\
+   \frac{\partial \mathbf{B}}{\partial t} &amp;= -c\nabla\times\mathbf{E}
+\end{align}
+\]</div>
+<p>In addition, we need to choose a length scale and time scale to make the
+equations dimensionless. We demand that <span class="arithmatex">\(c = 1\)</span>, therefore choosing a
+length scale automatically determines the appropriate time scale, and vice
+versa. Energy is measured using units of <span class="arithmatex">\(m_ec^2\)</span>, while particle momentum
+is measured in units of <span class="arithmatex">\(m_ec\)</span>. If we specify a unit of time as <span class="arithmatex">\(t_0
+= \omega_0^{-1}\)</span>, the Lorentz force then takes the dimensionless form:</p>
+<div class="arithmatex">\[
+   \frac{d\mathbf{p}}{m_ec\omega_0 dt} = \frac{e}{m_ec\omega_0}\left(\mathbf{E} + \frac{\mathbf{v}}{c}\times\mathbf{B}\right),
+\]</div>
+<p>It is therefore appropriate to use <span class="arithmatex">\(eE/m_ec\omega_0\)</span> as the dimensionless
+form of the electric (or magnetic) field. The dimensionless value of the
+magnetic field is therefore equal to the dimensionless ratio
+<span class="arithmatex">\(\omega_B/\omega_0\)</span>, or the dimensionless electron cyclotron frequency.
+The dimensionless charge density can be defined using the Gauss's law
+<span class="arithmatex">\(\nabla\cdot\mathbf{E}=\rho\)</span>:</p>
+<div class="arithmatex">\[
+   \frac{eE}{m_ec\omega_0}\frac{c/\omega_0}{x} = \frac{e\rho}{m_e\omega_0^2}.
+\]</div>
+<p>The right hand side is therefore the natural definition of dimensionless charge
+density. In the code units, the dimensionless plasma frequency is nicely related
+to the charge density as follows:</p>
+<div class="arithmatex">\[
+   \omega_p \equiv \sqrt{\frac{ne^2}{m_e}} = \sqrt{\frac{e\rho}{m_e\omega_0^2}}\omega_0.
+\]</div>
+<p>In other words, the dimensionless plasma frequency is simply the square root of
+the dimensionless charge density, <span class="arithmatex">\(\tilde{\omega}_p =
+\sqrt{\tilde{\rho}}\)</span>. Tilde here means the dimensionless quantity. This relationship is very convenient to use in plasma
+simulations.</p>
+<p>In HL units, the energy density of electric/magnetic field is
+<span class="arithmatex">\(\mathbf{E}^2/2\)</span> or <span class="arithmatex">\(\mathbf{B}^2/2\)</span> respectively, in contrast with
+the corresponding expressions of <span class="arithmatex">\(\mathbf{E}^2/8\pi\)</span> and
+<span class="arithmatex">\(\mathbf{B}^2/8\pi\)</span> in CGS units. The magnetization <span class="arithmatex">\(\sigma\)</span> is now defined as:</p>
+<div class="arithmatex">\[
+   \sigma \equiv \frac{B^2}{nm_ec^2} = \frac{(eB/m_ec\omega_0)^2}{e^2nm_ec^2}m_e^2c^2\omega_0^2 = \frac{(eB/m_ec\omega_0)^2}{e\rho/m_e\omega_0^2}.
+\]</div>
+<p>Identifying the terms, one can see that <span class="arithmatex">\(\sigma = \tilde{B}^2/\tilde{\rho}\)</span>.</p>
+<p>In an actual simulation, one needs to specify either a length scale <span class="arithmatex">\(x_0\)</span> or a time scale <span class="arithmatex">\(\omega_0^{-1}\)</span>, and it will completely specify the dimensionless unit system. For example, for a global pulsar simulation, the natural length scale is either the stellar radius <span class="arithmatex">\(R_*\)</span>, or the light cylinder radius <span class="arithmatex">\(R_\mathrm{LC}\)</span>. For a black hole simulation the natural length scale may be the gravitational radius <span class="arithmatex">\(r_g\)</span>. For a reconnection simulation it is often okay to choose the upstream <span class="arithmatex">\(\omega_0 = \omega_p\)</span>. In that case, one simply needs to initialize the upstream plasma density such that <span class="arithmatex">\(\tilde{\rho} = 1\)</span>.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../2-framework/" class="btn btn-neutral float-left" title="Framework"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../4-two-stream/" class="btn btn-neutral float-right" title="Two stream instability">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../2-framework/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../4-two-stream/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../javascripts/mathjax.js"></script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

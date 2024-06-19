@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Two stream instability - Aperture</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Two stream instability";
+        var mkdocs_page_input_path = "4-two-stream.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> Aperture
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../0-intro/">Intro</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Development</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../1-setup/">Quick Setup</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../2-framework/">Framework</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../3-units/">Units</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Tutorials</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Two stream instability</a>
+    <ul class="current">
+    </ul>
+                  </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../about/">About</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">Aperture</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Tutorials</li>
+      <li class="breadcrumb-item active">Two stream instability</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="tutorial-two-stream-instability">Tutorial: Two-stream Instability</h1>
+<p>In this tutorial, we will set up a Docker environment on your laptop for development of the code, and use it to run a basic 1D simulation of the electron two-stream instability.</p>
+<h1 id="install-docker-desktop">Install Docker Desktop</h1>
+<p>You can download and install Docker Desktop here, regardless of your operating system:
+https://www.docker.com/products/docker-desktop/</p>
+<p>Run "Docker Desktop". The first time it will try to setup your machine for Docker containers, so expect waiting for several minutes. But eventually you should see the main user interface of Docker Desktop. You can safely skip the initial tutorial.</p>
+<p>In order to prepare for our next steps, we want to create a persistent volume to hold all our development files. This can be done by clicking "Volumes" on the left panel, and then "Create" at the top right corner. Name it whatever you want, but I'll use <code>vol_home</code> as the volume name for the rest of this tutorial.</p>
+<h1 id="pull-the-development-docker-image">Pull the development Docker image</h1>
+<p>Click on the "Search" bar on the top right of Docker Desktop. Type in <code>fizban007/aperture_dev</code>. You will see my image shown below. You can download the image by clicking "Pull":</p>
+<p>.. image:: images/0oLlsIZ.png
+   :alt: Pull image</p>
+<p>Alternatively, you can open a terminal and run the following command</p>
+<p>.. code-block::</p>
+<p>docker pull fizban007/aperture_dev</p>
+<p>This will download the Docker image that contains all the development libraries necessary for compiling/debugging <code>Aperture</code>. The Docker image is pretty large at about 2.9GB, so the download will probably take a while depending on the speed of your internet connection. After the download is done, you should be able to see it under "Images" in the Docker Desktop.</p>
+<p>Now you can create a named container with this image and run it using the following command in a terminal (note: don't add extra spaces or the command may fail):</p>
+<p>.. code-block::</p>
+<p>docker run -it --mount source=vol_home,target=/home/developer --name Aperture_dev fizban007/aperture_dev</p>
+<p>Note that we referred to the volume we created in the previous step, and mounted it at <code>/home/developer</code>. The reason we mount the volume here is that the default user in the Docker image is <code>developer</code>\ , and this is the default home directory. The command above will <em>create a new container</em> with the name <code>Aperture_dev</code> and put you under a bash shell inside the Docker container. In the Docker Desktop GUI, you should be able to see our new container "Aperture_dev" in the "Containers" tab.</p>
+<p>You can checkout our PIC code <em>Aperture</em> using the following command inside the container:</p>
+<p>.. code-block::</p>
+<p>cd ~
+   git clone https://github.com/fizban007/Aperture4.git --branch develop</p>
+<p>This will create a directory called <code>Aperture4</code> in your mounted volume (inside the home directory of user <code>developer</code>\ ). This will be the directory we work with in the future. Note we cloned the <code>develop</code> branch, which is the most up-to-date and actively maintained one.</p>
+<p>We only need to create the container for one time. Afterwards, if you want to restart the container, the <code>docker run</code> command above will fail because we already have a container named "Aperture_dev". Instead, you can do:</p>
+<p>.. code-block::</p>
+<p>docker start Aperture_dev
+   docker attach</p>
+<p>This will start the container and put you under a command line prompt.</p>
+<h2 id="install-visual-studio-code">Install Visual Studio Code</h2>
+<p>Download and install VS Code from here: https://code.visualstudio.com/</p>
+<p>Run VS Code. You will be directed to a "Get started" page. Click on the 5th icon on the left panel marked "Extensions". We want to install the "Dev Containers" extension to allow us to attach to a running Docker container.</p>
+<p>.. image:: images/jXyOoAs.png
+   :alt: Extensions</p>
+<p>After installing "Dev Containers" (and possibly reloading VS Code), you should be able see a green button at the lower left corner of the window:</p>
+<p>.. image:: images/XJAwGiQ.png
+   :alt: Remote button</p>
+<p>Clicking the button, you will be prompted to choose an option to open a remote window. Choose "Attach to a Running Container...", and select "Aperture_dev" (which should be the only option). This will open a new window and the lower left corner should now display "Container fizban007/aperture_dev (Aperture_dev)":</p>
+<p>.. image:: images/o0N3Fxn.png
+   :alt: Remote connected</p>
+<p>After connecting to the container, select "Open Folder..." and choose <code>/home/developer/Aperture4</code>. This should open the project and display all the source files and folders on the left panel:</p>
+<p>.. image:: images/7gJo6sk.png
+   :alt: Source file tree</p>
+<p>These are all the source files of <em>Aperture</em>\ , and some associated data analysis scripts.</p>
+<p>We will now need to install some development plugins on the container. The most notable ones are <code>C/C++</code>\ , <code>CMake Tools</code>\ , <code>clang-format</code>\ , <code>Better TOML</code> and <code>Jupyter</code>. This way you can enable code auto-completion on all files inside the container, as well as use the integrated CMake utilities. You can also install <code>C/C++ Extension Pack</code> which will install <code>CMake Tools</code> automatically.</p>
+<h2 id="building-the-code-in-vs-code">Building the Code in VS Code</h2>
+<p>After installing the extensions, you will see that the bottom bar of VS Code is now modified. It will show "CMake: [Release]: Ready" and "No active kit":</p>
+<p>.. image:: images/j4jepqq.png
+   :alt: CMake buttons</p>
+<p>You can click on the "No active kit" button to choose a kit. Choose "GCC 12.2.0" as that is the default compiler in the Docker image. Then click on the "CMake:" button and choose "Release" again. It will prompt VS Code to run cmake again with the correct setup. You should see the output above eventually say "Build files have been written to: /home/developer/Aperture4/build". This means that all build instructions generated by CMake are now in the "Aperture/build" directory. You can proceed to build the code by clicking on "Build", next to the kit selection. In the future, if you have changed some files and would like to recompile the code base, you can click "Build" again.</p>
+<h2 id="building-the-code-from-command-line">Building the Code from Command Line</h2>
+<p>Alternatively, you can also build the code from command line, without the use of VS Code. Starting inside the container, assuming you just cloned the <code>Aperture4</code> repository, you can build the code using the following commands:</p>
+<p>.. code-block::</p>
+<p>cd ~/Aperture4
+   mkdir build
+   cd build
+   cmake ..
+   make -j8</p>
+<p>The <code>cmake</code> command generates the necessary compiler instructions and a <code>Makefile</code>\ , the <code>make</code> runs the commands inside that <code>Makefile</code> and compiles the entire codebase. The <code>-j8</code> option tells <code>make</code> to use 8 parallel processes, significantly speeding up the compilation.</p>
+<h2 id="running-basic-unit-tests">Running Basic Unit Tests</h2>
+<p>After you have built the code base, you can run the simple unit test suite using the command <code>make check</code> in the <code>build</code> directory. This will (ideally) perform a series of very basic functionality tests to make sure there is no catastrophic problems in the code base. Since the unit tests only cover very basic things, this is not a guarantee that all components of the code will operate correctly.</p>
+<p>You can also do this within VS Code. Click on the "[all]" button next to "Build", which will allow you to choose the compilation target. We want to choose <code>check</code>\ , then clicking on "Build" will effectively allow us to run <code>make check</code> in the build directory as if we were doing it in the terminal.</p>
+<h2 id="building-the-incomplete-documentation">Building the (Incomplete) Documentation</h2>
+<p>There is a rudimentary documentation bundled with the code. To access it, you need to build it in the container. It depends on <code>Doxygen</code>\ , <code>Sphinx</code>\ , <code>Breathe</code>\ , and <code>sphinx_rtd_theme</code>\ , which are all included in the development Docker image.</p>
+<p>To build the documentation, run <code>make docs</code> in the build directory. You can also use the same method as above, choosing <code>docs</code> as the build target in VS Code and build it there. This will create a bunch of <code>html</code> files in <code>Aperture4/docs/sphinx</code>.</p>
+<p>To access the documentation, you need to start a basic web server. Open a new terminal in VS Code and run the following:</p>
+<p>.. code-block::</p>
+<p>cd docs/sphinx
+   python -m http.server</p>
+<p>This will launch a server inside the container that serves the documentation pages. VS Code should automatically pop up a window in the lower right to prompt you open it in your browser. Clicking on it will take you to the documentation page. It contains some general information such as build options and the code unit system.</p>
+<h2 id="running-a-simple-simulation-example">Running a Simple Simulation Example</h2>
+<p>I prepared two very basic simulation examples in the code base, under <code>problems/examples</code>. All of the different setups in <em>Aperture</em> are stored in the <code>problems</code> directory, and the compiled binaries go into the <code>bin</code> directory of each problem. For example, after you have successfully compiled the code base, you should be able to see two files under <code>problems/examples/bin/</code>: <code>em_wave</code> and <code>test_particle</code>. Run the <code>test_particle</code> simulation using the following command:</p>
+<p>.. code-block::</p>
+<p>cd ~/Aperture4/problems/examples/bin
+   ./test_particles</p>
+<p>This will simulate a bunch of test particles moving in a uniform magnetic field. After the simulation is completed, you can see that there is a new directory called <code>Data</code> generated under <code>examples/bin</code>. This directory contains the outputs from the simulation. You should see <code>fld.[00000-01000].h5</code> which contains the field data for timesteps 0 through 1000, as well as <code>ptc.[00000-01000].h5</code> which contains the tracked particle data. <code>grid.h5</code> contains information about the grid, and <code>config.toml</code> contains the simulation parameters.</p>
+<h2 id="looking-at-simulation-data">Looking at Simulation Data</h2>
+<p>Our main way to analyze simulation data is through python in a Jupyter notebook. You can navigate to <code>python/Examples - Test Particle.ipynb</code> inside VS Code. It will open up a jupyter notebook interface containing the code blocks. We want to start a jupyter server inside the container and attach to that server in our VS Code window. To do that, open a terminal in VS Code using the short cut <code>Ctrl + Shift + `</code>\ , or click on the menu "Terminal -&gt; New Terminal".</p>
+<p>In the new terminal, navigate to the <code>python</code> directory using <code>cd python</code>\ , then run <code>jupyter server</code>. It will start a jupyter instance that can run python code in the notebook. You should be able to see something like this:</p>
+<p>.. image:: images/FVG8FUR.png
+   :alt: Jupyter server</p>
+<p>Copy the url highlighted in the red rectangle. Click on the "Jupyter Server: Remote" button near the lower right, highlighted by the red arrow above. In the menu that pops up, click "Existing". It will should automatically paste the link that you just copied in the prompt. If not, paste it manually. Press enter (twice, the second prompt you can leave blank), jupyter should now be connected to the instance inside the container. You can verify that this is correctly set up by looking at the top right corner of the VS Code window:</p>
+<p>.. image:: images/NUT6DmJ.png
+   :alt: Jupyter kernel</p>
+<p>If it shows "Python 3 (ipykernel)" like shown in the figure, then you are done. If not, click on it, and choose "Python 3 (ipykernel)" which should also say "(Remote) Jupyter Kernel".</p>
+<p>Now you can execute the notebook. It will plot the trajectory of two particles, which should trace out a fat circle in the plane. Feel free to play with the notebook and look at different aspects of the trajectory.</p>
+<h2 id="simulating-electron-two-stream-instability">Simulating Electron Two-Stream Instability</h2>
+<p>Let us try to use the code to run a simple realization of the electron two-stream instability. <em>Aperture</em> contains a setup ready, located in <code>problems/two_stream</code>. After you have successfully compiled the code using either <code>VS Code &lt;#building-the-code-in-vs-code&gt;</code>_ or <code>from the command line &lt;#building-the-code-from-command-line&gt;</code>_\ , there should be an executable file <code>two_stream_1d</code> inside the directory <code>problems/two_stream/bin</code>. In general, <em>Aperture</em> is organized such that every problem directory under <code>problems</code> will have <code>src</code> (which contains the source files of that problem setup) and <code>bin</code> (which contains the compiled binary files) directories.</p>
+<p>We will be using the configuration file <code>config_1d.toml</code> which is bundled with the code by default and located under <code>problems/two_stream/bin</code>. Review the contents of the file. It defines key numerical parameters such as the physical size of the simulation box, as well as the number of grid cells in each dimension. In particular, <code>ranks</code> determines how many MPI ranks are assigned to each dimension. The total number of ranks should map to the number of physical CPU cores used for the simulation. Adjust the number of ranks in <code>config_1d.toml</code> to the number of CPU cores available in your Docker container. You can find this number by going to the Docker Desktop configuration:</p>
+<p>.. image:: images/lCykJbE.png
+   :alt: Docker Desktop config</p>
+<p>then click on "Resources". It will show how many cores on your machine are allocated to the container. For the purpose of this tutorial I will assume this number is 8.</p>
+<p>You can launch the two-stream simulation in the command line using:</p>
+<p>.. code-block::</p>
+<p>mpirun -np 8 ./two_stream_1d -c config_1d.toml</p>
+<p>We use <code>mpirun</code> because it sets up the MPI environment with the correct number of CPUs. <code>-np 8</code> tells <code>mpirun</code> to use 8 physical cores, which you need to change to the number of ranks you assigned in the configuration file. <code>./two_stream_1d</code> is the name of the executable, and the option <code>-c config_1d.toml</code> specifies that we will be using <code>config_1d.toml</code> as our configuration file. If we do not specify this option, <em>Aperture</em> defaults to use the file named <code>config.toml</code>. If no such a file is in the current directory, all configuration options will be taken as default (which may very likely not make sense for your application).</p>
+<p>Depending on the speed of your development machine, the simulation will take anywhere from 30 seconds to several minutes. After it is done, you can see a directory <code>Data</code> created in <code>problems/two_stream/bin</code>. This is the directory that contains simulation outputs and the one we will analyze.</p>
+<h2 id="analyzing-two-stream-data">Analyzing Two-Stream Data</h2>
+<p>Start a Jupyter server using the instructions <code>above &lt;#looking-at-simulation-data&gt;</code>_. Open the note book <code>python/Two Stream Test.ipynb</code>. You should be able to run the entire notebook. The first cell loads the necessary libraries. The second cell loads the two stream data that we produced in the previous step. The third cell plots a single snapshot of the phase space of electrons. The 4th cell creates such a plot for every output time steps. The plots are located under <code>python/plots</code>. You can look at the plots in VS Code as well. Finally the 5th cell computes the energy history of the electric field, and the 6th cell plots it.</p>
+<p>In order to make a movie with the plots, you can open a terminal in VS Code and run:</p>
+<p>.. code-block::</p>
+<p>cd python
+   ffmpeg -y -f image2 -r 14 -i plots/%05d.png -c:v libx264 -crf 18 -vf "pad=ceil(iw/2)<em>2:ceil(ih/2)</em>2" -pix_fmt yuv420p phase_space.mp4</p>
+<p>If you do not have <code>ffmpeg</code> in the Docker container, remember to pull the latest image from Docker Hub and re-create your container using the instructions <code>above &lt;#pull-the-development-docker-image&gt;</code>_.</p>
+<p>Once you successfully produced <code>phase_space.mp4</code>\ , you can look at it in VS Code. You can also download it to your local machine by right clicking on the file and choose "Download".</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../3-units/" class="btn btn-neutral float-left" title="Units"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../about/" class="btn btn-neutral float-right" title="About">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../3-units/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../about/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../javascripts/mathjax.js"></script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

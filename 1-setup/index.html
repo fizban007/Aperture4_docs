@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Quick Setup - Aperture</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Quick Setup";
+        var mkdocs_page_input_path = "1-setup.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> Aperture
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../0-intro/">Intro</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Development</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Quick Setup</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#config-file">Config File</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#source-code">Source Code</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../2-framework/">Framework</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../3-units/">Units</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Tutorials</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../4-two-stream/">Two stream instability</a>
+                  </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../about/">About</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">Aperture</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Development</li>
+      <li class="breadcrumb-item active">Quick Setup</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="setting-up-a-simulation">Setting up a Simulation</h1>
+<p>The following code is the boiler plate for setting up a PIC simulation in <code>Aperture</code>:</p>
+<pre><code class="language-cpp">#include &quot;framework/config.h&quot;
+#include &quot;framework/environment.h&quot;
+#include &quot;systems/data_exporter.h&quot;
+#include &quot;systems/domain_comm.h&quot;
+#include &quot;systems/field_solver_cartesian.h&quot;
+#include &quot;systems/ptc_updater.h&quot;
+
+using namespace Aperture;
+
+int main(int argc, char* argv[]) {
+    typedef Config&lt;2&gt; Conf; // Specify that this is a 2D simulation
+    // Initialize the simulation environment
+    auto &amp;env = sim_environment::instance(&amp;argc, &amp;argv);
+    // Choose execution policy depending on compile options (GPU or CPU)
+    using exec_policy = exec_policy_dynamic&lt;Conf&gt;;
+
+    // Setting up domain decomposition
+    domain_comm&lt;Conf, exec_policy_dynamic&gt; comm;
+    // Setting up the simulation grid
+    grid_t&lt;Conf&gt; grid(comm);
+    // Add a particle pusher
+    auto pusher = env.register_system&lt;
+        ptc_updater&lt;Conf, exec_policy_dynamic, coord_policy_cartesian&gt;&gt;(grid,
+        &amp;comm);
+    // Add a field solver
+    auto solver = env.register_system&lt;
+        field_solver&lt;Conf, exec_policy_dynamic, coord_policy_cartesian&gt;&gt;(grid,
+        &amp;comm);
+    // Setup data output
+    auto exporter = env.register_system&lt;data_exporter&lt;Conf,
+        exec_policy_dynamic&gt;&gt;(grid, &amp;comm);
+
+    // Call the init() method of all systems
+    env.init();
+
+    // Prepare initial conditions
+    ...
+
+    // Enter the main simulation loop
+    env.run();
+}
+</code></pre>
+<p>The <code>Config</code> class contains compile-time configurations for the code,
+including the dimensionality (2 in the above example), data type for floating
+point numbers, particle pusher type, and indexing scheme.</p>
+<p>The method <code>register_system&lt;T&gt;</code> constructs a :doc:<code>/api/framework/system</code>, puts it in the registry, and returns a pointer to it. When <code>init()</code> or <code>run()</code> is
+called, all the <code>init()</code> and <code>run()</code> methods of the registered systems are
+run in the order they are registered. In the above example, at every timestep,
+the code will first call the <code>ptc_updater</code>, then the <code>field_solver</code>, then
+the <code>data_exporter</code>.</p>
+<p>There are two main ways to customize the problem setup, namely through the
+config file <code>config.toml</code>, or programmatically through coding initial or
+boundary conditions.</p>
+<h2 id="config-file">Config File</h2>
+<p>Every <code>system</code> has a number of parameters that can be customized through run
+time parameters. All parameters are read from a configuration file in the
+<code>toml &lt;https://github.com/toml-lang/toml&gt;</code>_ format. By default, the code will
+look for a file named <code>config.toml</code> in the same directory as the executable. A
+different config file can also be specified through a launch parameter:</p>
+<pre><code>$ ./aperture -c some/other/config/file.toml
+</code></pre>
+<p>Parameters are stored in an instance of :ref:<code>params_store</code> in the
+:ref:<code>sim_environment</code> class. One can also define all the required parameters
+programmatically:</p>
+<pre><code>sim_env().params().add(&quot;dt&quot;, 0.01);
+sim_env().params().add(&quot;max_ptc_num&quot;, 100);
+</code></pre>
+<p>Since systems may use parameters in their constructors, one should add
+whatever needed parameters before initializing any systems.</p>
+<h2 id="source-code">Source Code</h2>
+<p>Some things need to be specified in the source code and require a recompile,
+e.g. non-trivial initial conditions. For example, one can assign an initial
+function to some field:</p>
+<pre><code class="language-cpp">vector_field&lt;Conf&gt; *B0;  // Declare a pointer to the background B
+env.get_data(&quot;B0&quot;, &amp;B0); // Point it to the &quot;B0&quot; data component in the registry
+double Bp = 100.0;       // Set a characteristic value for B
+B0-&gt;set_value(0, [Bp](auto r, auto theta, auto phi) {
+    return Bp / square(r);
+}); // Set the 0th component (B_r) to a monopole field in spherical coordinates
+</code></pre>
+<p>Nontrivial boundary conditions can be more difficult to set up, especially
+time-dependent ones which requires the user to write a customized <code>system</code>.
+Please refer to <a href="../2-framework/">The Aperture Framework</a> for an explanation of
+how to write a custom <code>system</code>.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../0-intro/" class="btn btn-neutral float-left" title="Intro"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../2-framework/" class="btn btn-neutral float-right" title="Framework">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../0-intro/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../2-framework/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../javascripts/mathjax.js"></script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
