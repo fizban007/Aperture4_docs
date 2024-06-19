@@ -108,7 +108,7 @@ of ultra-relativistic particles with electromagnetic field and radiation, which
 occurs very often in astrophysical scenarios.</p>
 <h2 id="downloading-aperture">Downloading Aperture</h2>
 <p>To download and compile <code>Aperture</code>, you can clone it from the github repo:</p>
-<pre><code>   $ git clone https://github.com/fizban007/Aperture4.git
+<pre><code>$ git clone https://github.com/fizban007/Aperture4.git
 </code></pre>
 <h2 id="development-in-a-container">Development in a Container</h2>
 <p>The easiest way to compile and develop <code>Aperture</code> is to use a Docker container.
@@ -118,9 +118,9 @@ contains all the necessary libraries to develop <code>Aperture</code>.</p>
 <p>In order to avoid using the root user in the container, a default user called
 <code>developer</code> is created by default. It is recommended to mount a Docker volume
 (or a host directory) to the root directory <code>/code</code> which is writable by user <code>developer</code>. One can do this using:</p>
-<pre><code>   $ docker pull fizban007/aperture_dev
-   $ docker volume create vol1
-   $ docker run -it --name Aperture_dev --mount source=vol1,target=/code fizban007/aperture_dev
+<pre><code>$ docker pull fizban007/aperture_dev
+$ docker volume create vol1
+$ docker run -it --name Aperture_dev --mount source=vol1,target=/code fizban007/aperture_dev
 </code></pre>
 <p>This will create a container named <code>Aperture_dev</code> which mounts the volume at the
 correct location. Once in the container, one can clone the main code repo, use
@@ -145,9 +145,9 @@ directory should contain the necessary <code>module load</code> for the given ma
 compile the code.</p>
 <h2 id="compiling-the-code">Compiling the Code</h2>
 <p>Whether you use a Docker container or manage the libraries on your own, you can compile the code using the following:</p>
-<pre><code>   $ mkdir build &amp; cd build
-   $ cmake ..
-   $ make -j8
+<pre><code>$ mkdir build &amp; cd build
+$ cmake ..
+$ make -j
 </code></pre>
 <p>This will compile the main <code>Aperture</code> library, the test cases, and the problems.
 The binary files for specific setups will be generated inside the corresponding
@@ -173,16 +173,13 @@ controls some compile-time configurations:</p>
 <p>Apart from these options, standard CMake options apply as well. For example, the
 code will compile in <code>Release</code> mode by default. To change it to <code>Debug</code>, append
 <code>-DCMAKE_BUILD_TYPE=Debug</code> to the <code>cmake</code> command.</p>
-<p>To run a small suite of unit tests, run <code>make check</code> in the build directory. To
-generate this documentation, run <code>make docs</code>. The dependencies for generating
-documentation include <code>Doxygen</code>, <code>Sphinx</code>, <code>Breathe</code>, and <code>sphinx_rtd_theme</code>.
-The latter 3 are python packages and preferably installed in a python virtual
-environment.</p>
+<p>To run a small suite of unit tests, run <code>make check</code> in the build directory.</p>
 <h2 id="running-simulations">Running Simulations</h2>
-<p>To run a quick test simulation, checkout the <code>training</code> directory in
-<code>problems</code>. It contains several self-contained simple setups that can run
-without fiddling with configuration files. For a more in-depth guide on
-simulation setup, checkout :doc:<code>Setting up a Simulation &lt;1-setup&gt;</code>.</p>
+<p>To run a quick test simulation, checkout the <code>training</code> directory in <code>problems</code>.
+It contains several self-contained simple setups that can run without fiddling
+with configuration files. For a more in-depth guide on simulation setup,
+checkout <a href="../1-setup/">Setting up a Simulation</a>, or take a look at one of the
+tutorials.</p>
               
             </div>
           </div><footer>

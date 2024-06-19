@@ -53,6 +53,18 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">Framework</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#systems">Systems</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#register_data_components">register_data_components()</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#init">init()</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#update">update()</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#data-components">Data Components</a>
+    </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../3-units/">Units</a>
@@ -109,29 +121,28 @@ module that works on the data, e.g. pushing particles or evolving fields.</p>
 flexible and can be plugged in and out depending on the problem. It is also very
 straightforward to handle data IO, since we can simply serialize a list of named
 <code>data</code> objects.</p>
-<p>For lack of a better name, the :ref:<code>sim_environment</code> class is a coordinator
+<p>For lack of a better name, the <code>sim_environment</code> class is a coordinator
 that ties things together. It keeps a registry of systems and data components,
 and calls every system in order in a giant loop for the duration of the
 simulation.</p>
-<h1 id="systems">Systems</h1>
-<p>Every system derives from the common base class :ref:<code>system_t</code>. There are three
+<h2 id="systems">Systems</h2>
+<p>Every system derives from the common base class <code>system_t</code>. There are three
 virtual functions a system can override: <code>register_data_components()</code>,
 <code>init()</code>, and <code>update()</code>.</p>
-<p>register_data_components()
-^^^^^^^^^^^^^^^^^^^^^^^^^^</p>
+<h3 id="register_data_components">register_data_components()</h3>
 <p>A system needs to work on some data components. Depending on what systems are
 initialized, some data components may or may not be used. Therefore, systems are
 responsible for managing their own data dependency. For example, a
-<code>field_solver</code> system needs to work on :math:<code>\mathbf{E}</code> and
-:math:<code>\mathbf{B}</code> fields, so it needs to register this dependency by overriding the <code>register_data_components()</code> function:</p>
-<p>.. code-block:: cpp</p>
-<p>void register_data_components() {
-       // E is a raw pointer to vector_field<Conf>
-       E = m_env.register_data<vector_field\<Conf>>(
-             "E", m_grid, field_type::edge_centered);
-       B = m_env.register_data<vector_field\<Conf>>(
-             "B", m_grid, field_type::edge_centered);
-   }</p>
+<code>field_solver</code> system needs to work on <span class="arithmatex">\(\mathbf{E}\)</span> and
+<span class="arithmatex">\(\mathbf{B}\)</span> fields, so it needs to register this dependency by overriding the <code>register_data_components()</code> function:</p>
+<pre><code class="language-cpp">   void register_data_components() {
+       // E is a raw pointer to vector_field&lt;Conf&gt;
+       E = m_env.register_data&lt;vector_field&lt;Conf&gt;&gt;(
+             &quot;E&quot;, m_grid, field_type::edge_centered);
+       B = m_env.register_data&lt;vector_field&lt;Conf&gt;&gt;(
+             &quot;B&quot;, m_grid, field_type::edge_centered);
+   }
+</code></pre>
 <p><code>E</code> and <code>B</code> are pointers to <code>vector_field&lt;Conf&gt;</code> and are constructed here.
 <code>register_data_components()</code> takes an <code>std::string</code> for a name, followed by
 parameters that are passed to the constructor of the data component. If these
@@ -139,11 +150,9 @@ data components are registered already by another system under the same name,
 then the register_data() function will only return the pointer. No two
 components with the same name can co-exist. <code>register_data_components()</code> is
 called right after the constructor of the system, in <code>register_system()</code>.</p>
-<p>init()
-^^^^^^</p>
-<p>update()
-^^^^^^^^</p>
-<h1 id="data-components">Data Components</h1>
+<h3 id="init">init()</h3>
+<h3 id="update">update()</h3>
+<h2 id="data-components">Data Components</h2>
 <p>Every data component derives from the common base class <code>data_t</code>.</p>
               
             </div>
