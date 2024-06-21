@@ -2,7 +2,7 @@
 
 This is the documentation repository for the Particle-in-Cell (PIC) code
 **Aperture**. The documentation is hosted using Github Pages at:
-[http://www.pulsarmagnetosphere.com/Aperture4_docs/](http://www.pulsarmagnetosphere.com/Aperture4_docs/).
+[http://fizban007.github.io/Aperture4_docs/](http://fizban007.github.io/Aperture4_docs/).
 
 ## Documentation Development
 
@@ -14,6 +14,7 @@ documentation, you need to install the following Python libraries:
 $ pip install mkdocs pymdown-extensions
 ```
 
-Then, clone this repository, and run `mkdocs serve`. This will start a
-development server at `127.0.0.1:8000` by default. Any changes you make to the
-documentation can be seen in the browser in real time.
+Then, clone this repository, and run `mkdocs serve` in its root directory. This
+will start a development server at `127.0.0.1:8000` by default. Any changes you
+make to the documentation can be seen in the browser in real time.
+
